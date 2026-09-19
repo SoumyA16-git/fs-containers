@@ -1,0 +1,41 @@
+services:
+  frontend:
+    image: bloglist-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    depends_on:
+      - backend
+
+  backend:
+    image: bloglist-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - MONGODB_URI=mongodb://root:password@mongo:27017/bloglist?authSource=admin
+      - PORT=3003
+      - SECRET=prodsecretkey123
+    depends_on:
+      - mongo
+
+  nginx:
+    image: nginx:1.29
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    depends_on:
+      - frontend
+      - backend
+
+  mongo:
+    image: mongo:7.0
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongo-prod-data:/data/db
+
+volumes:
+  mongo-prod-data:

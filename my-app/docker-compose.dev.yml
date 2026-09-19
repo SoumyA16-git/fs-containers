@@ -1,0 +1,45 @@
+services:
+  frontend:
+    image: bloglist-frontend-dev
+    build:
+      context: ./frontend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./frontend/:/usr/src/app
+    environment:
+      - VITE_BACKEND_URL=/api
+
+  backend:
+    image: bloglist-backend-dev
+    build:
+      context: ./backend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./backend/:/usr/src/app
+    environment:
+      - MONGODB_URI=mongodb://root:password@mongo:27017/bloglist?authSource=admin
+      - PORT=3003
+      - SECRET=devsecretkey123
+    depends_on:
+      - mongo
+
+  nginx:
+    image: nginx:1.29
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    depends_on:
+      - frontend
+      - backend
+
+  mongo:
+    image: mongo:7.0
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    volumes:
+      - mongo-dev-data:/data/db
+
+volumes:
+  mongo-dev-data:

@@ -1,0 +1,62 @@
+$ docker exec -it todo-backend-mongo-1 mongosh -u the_username -p the_password
+Current Mongosh Log ID:	66ec56891234abcd5678ef01
+Connecting to:		mongodb://<credentials>@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.3.1
+Using MongoDB:		7.0.14
+Using Mongosh:		2.3.1
+
+the_database> show dbs
+admin         100.00 KiB
+config         60.00 KiB
+local          72.00 KiB
+the_database   72.00 KiB
+
+the_database> use the_database
+already on db the_database
+
+the_database> show collections
+todos
+
+the_database> db.todos.find({})
+[
+  {
+    _id: ObjectId('66ec57121234abcd5678ef10'),
+    text: 'Write code',
+    done: true,
+    __v: 0
+  },
+  {
+    _id: ObjectId('66ec57121234abcd5678ef11'),
+    text: 'Learn about containers',
+    done: false,
+    __v: 0
+  }
+]
+
+the_database> db.todos.insertOne({ text: "Increase the number of tools in my tool belt", done: false })
+{
+  acknowledged: true,
+  insertedId: ObjectId('66ec57981234abcd5678ef12')
+}
+
+the_database> db.todos.find({})
+[
+  {
+    _id: ObjectId('66ec57121234abcd5678ef10'),
+    text: 'Write code',
+    done: true,
+    __v: 0
+  },
+  {
+    _id: ObjectId('66ec57121234abcd5678ef11'),
+    text: 'Learn about containers',
+    done: false,
+    __v: 0
+  },
+  {
+    _id: ObjectId('66ec57981234abcd5678ef12'),
+    text: 'Increase the number of tools in my tool belt',
+    done: false
+  }
+]
+
+the_database> exit
